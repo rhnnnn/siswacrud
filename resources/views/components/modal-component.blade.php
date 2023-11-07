@@ -25,7 +25,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header {{$classHeader}}" > 
-          <h1 class="modal-title fs-5" id="{{$idTitle}}">{{$title}}</h1>
+          <h5 class="modal-title " id="{{$idTitle}}">{{$title}}</h5>
           {{-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="color: white"></button> --}}
           <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
         </div>
@@ -37,7 +37,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary">Okay</button>
         </div>
       </form> 
       </div>
