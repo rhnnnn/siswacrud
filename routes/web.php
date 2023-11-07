@@ -20,3 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [SiswaController::class,'index']);
 Route::post('/',[SiswaController::class,'store']);
+
+Route::put('/update/{id}',[SiswaController::class,'update']);
+
+Route::delete('/destroy/{id}',[SiswaController::class,'destroy']);

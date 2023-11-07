@@ -64,7 +64,7 @@
                         @if ($siswa->foto)
                         <img src="{{asset($siswa->foto)}}" alt="" height="125" style="border-radius: 5px;" />
                         @else {{-- <img src="{{ asset('assets/img/default/OIP.jpeg') }}" alt="" width="75" height="75" style="border-radius: 5px;" /> --}}
-                        <img src="https://static.miraheze.org/bluearchivewiki/0/0f/Arisu.png" alt="" height="125" style="border-radius: 5px;" />
+                        <img src="{{ asset('assets/img/default/OIP.jpeg') }}" alt="" height="125" style="border-radius: 5px;" />
                         @endif
                     </td>
                     <td>{{ $siswa->nis }}</td>
@@ -77,8 +77,8 @@
                         <a href="#" class="edit" data-bs-toggle="modal" data-bs-target="#ubahSiswa-{{$siswa->id}}">
                             <i class="fa-regular fa-pen-to-square" title="Edit" data-bs-toggle="tooltip"></i>
                         </a>
-                        <a href="#" class="delete" data-bs-toggle="modal" data-bs-target="#deleteSiswaModal" data-Siswa-id="{{ $siswa->id }}">
-                            <i class="fa-regular fa-trash-can" data-bs-toggle="tooltip" title="Delete"></i>
+                        <a href="#" class="delete" data-bs-toggle="modal" data-bs-target="#hapusSiswa-{{$siswa->id}}">
+                            <i class="fa-regular fa-trash-can" title="Delete" data-bs-toggle="tooltip"></i>
                         </a>
                     </td>
                 </tr>
@@ -107,12 +107,12 @@
 </div>
 {{-- emd table from aku_crud --}}
 
-<!-- Modal -->
+<!-- Modal tambah-->
 
 <x-modal-component id="tambahSiswa" idTitle="tambahSiswaTitle" title="Add Siswa" formAction="/" method="POST" classHeader="bg-success text-white">
     <div class="mb-3">
         <label class="form-label">NIS</label>
-        <input type="number" class="form-control" name="nis" placeholder="masukkan nis siswa" maxlength="5" />
+        <input type="number" min="1" max="99999" minlength="1" maxlength="5" class="form-control" name="nis" placeholder="masukkan nis siswa"/>
     </div>
     <div class="mb-3">
         <label class="form-label">Nama</label>
@@ -136,7 +136,7 @@
     </div>
     <div class="mb-3">
         <label class="form-label">Telp</label>
-        <input type="number" class="form-control" name="tlp" placeholder="masukkan no. telp siswa" maxlength="13" />
+        <input type="number" min="1" max="9999999999999" minlength="9" maxlength="13" class="form-control" name="tlp" placeholder="masukkan no. telp siswa"/>
     </div>
     <div class="mb-3">
         <label class="form-label">Alamat Domisili</label>
@@ -149,23 +149,20 @@
         <div class="d-flex justify-content-center mt-2">
             <div class="card" style="background-color: #f5f5f5; max-width: 75%;">
                 <div class="card-body d-flex align-items-center flex-column">
-                    <!-- <div class="image-container d-flex align-items-center flex-column mb-3"> -->
-                    <!-- <div class="mt-3"> -->
                     <img id="image-preview" src="" alt="Image Preview" class="img-fluid rounded image-preview mb-3" />
-                    <!-- </div><br> -->
-                    <input type="file" id="file-input" class="form-control" accept="image/*" onchange="previewImage()" />
-                    <!-- </div> -->
+                    <input type="file" name="foto" id="file-input" class="form-control" accept="image/*" onchange="previewImage()" />
                 </div>
             </div>
         </div>
     </div>
 </x-modal-component>
 
+{{-- modal ubah --}}
 @foreach ($siswas as $siswa)
-<x-modal-component id="ubahSiswa-{{$siswa->id}}" idTitle="ubahSiswaTitle" title="Edit Siswa" formAction="/update" method="PUT" classHeader="bg-warning">
+<x-modal-component id="ubahSiswa-{{$siswa->id}}" idTitle="ubahSiswaTitle" title="Edit Siswa" formAction="/update/{{$siswa->id}}" method="PUT" classHeader="bg-warning" >
     <div class="mb-3">
         <label class="form-label">NIS</label>
-        <input type="number" class="form-control" name="nis" placeholder="masukkan nis siswa" maxlength="5" value="{{$siswa->nis}}" />
+        <input type="number" min="1" max="99999" minlength="1" maxlength="5" class="form-control" name="nis" value="{{$siswa->nis}}" />
     </div>
     <div class="mb-3">
         <label class="form-label">Nama</label>
@@ -173,7 +170,6 @@
     </div>
     <div class="mb-3">
         <label class="form-label">Kelas</label>
-        {{-- <input type="text" class="form-control" name="kls" placeholder="masukkan kelas" /> --}}
         <select name="kls" class="form-select">
             <option value="XII-Abydos" {{$siswa->kelas=="XII-Abydos" ? "selected":""}}>XII-Abydos</option>
             <option value="XII-Millenium" {{$siswa->kelas=="XII-Millenium" ? "selected":""}}>XII-Millenium</option>
@@ -182,32 +178,27 @@
     <div class="mb-3">
         <label class="form-label">Jenis Kelamin</label>
         <select class="form-select" name="jkl">
-            <option selected>Pilih Jenis Kelamin</option>
-            <option value="lakilaki">Laki-Laki</option>
-            <option value="perembuan">Perempuan</option>
+            <option value="lakilaki" {{$siswa->kelamin=="lakilaki" ? "selected" : ""}}>Laki-Laki</option>
+            <option value="perembuan" {{$siswa->kelamin=="perembuan" ? "selected" : ""}}>Perempuan</option>
         </select>
     </div>
     <div class="mb-3">
         <label class="form-label">Telp</label>
-        <input type="number" class="form-control" name="tlp" placeholder="masukkan no. telp siswa" maxlength="13" value="{{$siswa->telp}}" />
+        <input type="number" min="1" max="9999999999999" minlength="9" maxlength="13" class="form-control" name="tlp" value="{{$siswa->telp}}" />
     </div>
     <div class="mb-3">
         <label class="form-label">Alamat Domisili</label>
         <textarea class="form-control" name="alamat" rows="3">{{$siswa->alamat}}</textarea>
     </div>
     <div class="mb-3">
-        <label for="file-input-edit">
+        <label for="file-input-edit-{{$siswa->id}}">
             Foto
         </label>
         <div class="d-flex justify-content-center mt-2">
             <div class="card" style="background-color: #f5f5f5; max-width: 75%;">
-                <div class="card-body d-flex align-items-center flex-column">
-                    <!-- <div class="image-container d-flex align-items-center flex-column mb-3"> -->
-                    <!-- <div class="mt-3"> -->
-                    <img id="image-preview-edit" src="{{asset($siswa->foto)}}" alt="Image Preview" class="img-fluid rounded image-preview mb-3" />
-                    <!-- </div><br> -->
-                    <input type="file" id="file-input-edit" class="form-control" accept="image/*" onchange="previewImageEdit()" />
-                    <!-- </div> -->
+                <div class="card-body d-flex align-items-center flex-column edit-modal" id="up-preview-image-{{$siswa->id}}" data-foto-url="{{$siswa->foto}}">
+                    <img id="image-preview-edit-{{$siswa->id}}" src="" alt="Image Preview" class="img-fluid rounded image-preview-edit mb-3"  />
+                    <input type="file" name="foto" id="file-input-edit-{{$siswa->id}}" class="form-control" accept="image/*" onchange="previewImageEdit({{$siswa->id}})" />
                 </div>
             </div>
         </div>
@@ -215,5 +206,12 @@
 </x-modal-component>
 
 @endforeach 
+
+{{-- Modal HApus --}}
+@foreach ($siswas as $siswa)
+<x-modal-component id="hapusSiswa-{{$siswa->id}}" idTitle="hapusSiswaTitle" title="Delete Siswa" formAction="/destroy/{{$siswa->id}}" method="DELETE" classHeader="bg-danger text-white">
+<h4 class="text-center">Apakah anda yakin untuk menghapus data <b class="text-danger">{{$siswa->nama}}</b> ?</h4>
+</x-modal-component>
+@endforeach
 
 @endsection

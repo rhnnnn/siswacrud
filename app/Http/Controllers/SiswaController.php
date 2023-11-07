@@ -15,65 +15,6 @@ class SiswaController extends Controller
         return view('pages.siswa', compact('siswas'));
     }
 
-    // public function store(Request $request)
-    // {
-    //     //
-    //     $validatedData=$request->validate([
-    //         'nis' => 'required',
-    //         'nama' => 'required',
-    //         'kelas' => 'required',
-    //         'jenis_kelamin' => 'required',
-    //         'no_telp' => 'required',
-    //         'alamat' => 'required',
-    //         'foto' => 'nullable|mimes:jpg,jpeg,png|max:2048',
-    //     ]);
-
-    //     Siswa::create([
-    //         'nis' => $validatedData['nis'],
-    //         'nama' => $validatedData['nama'],
-    //         'kelas' => $validatedData['kelas'],
-    //         'kelamin' => $validatedData['jenis_kelamin'],
-    //         'telp' => $validatedData['no_telp'],
-    //         'alamat' => $validatedData['alamat'],
-    //         'foto' => $validatedData['foto']
-    //     ]);
-
-    //     // dd($simpan);
-
-    //     // // Process upload foto
-    //     // if ($request->file('foto') == "") {
-
-    //     //     dd($simpan);
-
-    //     // } elseif ($request->hasFile('foto')) {
-    //     //     $image = $request->file('foto');
-
-    //     //     $image->move(public_path('photos'), $image->getClientOriginalName());
-
-    //     //     $simpan = Siswa::create([
-    //     //         'nis' => $request->nis,
-    //     //         'nama' => $request->nama,
-    //     //         'kelas' => $request->kelas,
-    //     //         'kelamin' => $request->jenis_kelamin,
-    //     //         'telp' => $request->no_telp,
-    //     //         'alamat' => $request->alamat,
-    //     //         'foto' => $image->getClientOriginalName()
-    //     //     ]);
-    //     // }
-
-    //     // if ($simpan) {
-    //     //     // Redirect with success message
-    //     //     Alert::success('Simpan Data', 'Data siswa sukses diSimpan');
-
-    //     //     return redirect('/')->with(['success' => 'Data berhasil disimpan!']);
-    //     // } else {
-    //     //     // Redirect with error message
-    //     //     Alert::error('Simpan Data', 'Data siswa gagal disimpan');
-    //     //     return redirect('/')->with(['error' => 'Data gagal disimpan!']);
-    //     // }
-
-    // }
-
     public function store(Request $request)
     {
         //
@@ -84,9 +25,9 @@ class SiswaController extends Controller
             'jkl' => 'required',
             'tlp' => 'required',
             'alamat' => 'required',
-            'foto' => 'mimes:jpg,jpeg,png|max:2048'
+            'foto' => 'mimes:jpg,jpeg,png|max:2048',
         ]);
-        
+
         // Process upload foto
         if ($request->file('foto') == "") {
             $simpan = Siswa::create([
@@ -96,13 +37,13 @@ class SiswaController extends Controller
                 'kelamin' => $request->jkl,
                 'telp' => $request->tlp,
                 'alamat' => $request->alamat,
-                'foto' => ''
+                'foto' => '',
             ]);
         } elseif ($request->hasFile('foto')) {
             $image = $request->file('foto');
-            
+
             $image->move(public_path('storage/photos'), $image->getClientOriginalName());
-            
+
             $simpan = Siswa::create([
                 'nis' => $request->nis,
                 'nama' => $request->nm,
@@ -110,20 +51,84 @@ class SiswaController extends Controller
                 'kelamin' => $request->jkl,
                 'telp' => $request->tlp,
                 'alamat' => $request->alamat,
-                'foto' => 'storage/photos/'.$image->getClientOriginalName()
+                'foto' => 'storage/photos/' . $image->getClientOriginalName(),
             ]);
         }
-        
+
         if ($simpan) {
             // Redirect with success message
             Alert::success('Simpan Data', 'Data siswa sukses diSimpan');
-            
+
             return redirect('/')->with(['success' => 'Data berhasil disimpan!']);
         } else {
             // Redirect with error message
             Alert::error('Simpan Data', 'Data siswa gagal disimpan');
             return redirect('/')->with(['error' => 'Data gagal disimpan!']);
         }
-        
+    }
+
+    public function update(Request $request, $id)
+    {
+        //
+        $this->validate($request, [
+            'nis' => 'required',
+            'nm' => 'required',
+            'kls' => 'required',
+            'jkl' => 'required',
+            'tlp' => 'required',
+            'alamat' => 'required',
+            'foto' => 'mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $upd = Siswa::find($id);
+        if ($request->file('foto') == "") {
+            $upd->update([
+                'nis' => $request->nis,
+                'nama' => $request->nm,
+                'kelas' => $request->kls,
+                'kelamin' => $request->jkl,
+                'telp' => $request->tlp,
+                'alamat' => $request->alamat,
+            ]);
+        } else {
+            //proses upload gambar baru
+            $image = $request->file('foto');
+
+            $image->move(public_path('storage/photos'), $image->getClientOriginalName());
+
+            $upd->update([
+                'nis' => $request->nis,
+                'nama' => $request->nm,
+                'kelas' => $request->kls,
+                'kelamin' => $request->jkl,
+                'telp' => $request->tlp,
+                'alamat' => $request->alamat,
+                'foto' => 'storage/photos/' . $image->getClientOriginalName(),
+            ]);
+        }
+        if ($upd) {
+            //redirect dengan pesan sukses
+            Alert::success('Ubah Data','data siswa sukses diubah');
+            return redirect('/');
+        } else {
+            //redirect dengan pesan error
+            Alert::error('Ubah Data', 'data siswa gagal diubah');
+            return redirect('/');
+        }
+    }
+
+    public function destroy($id){
+        $del=Siswa::find($id);
+        $del->delete();
+
+        if ($del) {
+            //redirect dengan pesan sukses
+            Alert::success('Hapus Data','data siswa sukses dihapus');
+            return redirect()->back();
+        } else {
+            //redirect dengan pesan error
+            Alert::error('Hapus Data', 'data siswa gagal dihapus');
+            return redirect()->back();
+        }
     }
 }
