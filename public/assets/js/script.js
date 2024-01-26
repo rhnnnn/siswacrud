@@ -1,4 +1,4 @@
-// image preview upload 
+// image preview upload
 function previewImage() {
     const fileInput = document.getElementById("file-input");
     const imagePreview = document.getElementById("image-preview");
@@ -58,3 +58,42 @@ function previewImageEdit(identifier) {
     }
 }
 
+// function liveSearch() {
+//     $('#search').on('keyup', function() {
+//         var query = $(this).val()
+//         if (query !== '') {
+//             $.ajax({
+//                 url: '/search', // Replace with the appropriate route URL
+//                 type: 'GET',
+//                 data: { query: query },
+//                 success: function(data) {
+//                     $('#search-results').html(data)
+//                 }
+//             })
+//         } else {
+//             $('#search-results').empty()
+//         }
+//     })
+// }
+
+$(document).ready(function () {
+    $("#search").on("keyup", function () {
+        let value = $(this).val().toLowerCase();
+        let url = new URL(window.location.href);
+        url.searchParams.set("search", value);
+        url.searchParams.delete("page");
+
+        $.ajax({
+            url: newURL,
+            success: function (result) {
+                $("#table-body").html($(result).find("#table-body").html());
+
+                $(".pagination a").each(function () {
+                    let href = $(this).attr("href");
+                    href = href.split("?")[0] + "?" + url.searchParams.toString();
+                    $(this).attr("href", href);
+                });
+            },
+        });
+    });
+});
