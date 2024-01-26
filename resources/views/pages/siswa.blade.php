@@ -39,7 +39,7 @@
                 --}}
                 <div class="col-md-3 form-inline">
                     {{-- <label>Search</label> --}}
-                    <input type="text" class="form-control mr-sm-2" id="search" name="search" oninput="search()" placeholder="Search by Name or AMs" />
+                    <input type="text" class="form-control mr-sm-2" id="search" name="search" oninput="liveSearch()" placeholder="Search by Name or AMs" />
                 </div>
             </div>
             <thead>

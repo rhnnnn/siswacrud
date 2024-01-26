@@ -9,9 +9,15 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class SiswaController extends Controller
 {
-    function index()
+    function index(Request $request)
     {
         $siswas = Siswa::paginate(10);
+
+        if ($request->has('search')) {
+            $search=$request->input('search');
+            // $siswas->where('nis')
+        }
+
         return view('pages.siswa', compact('siswas'));
     }
 
